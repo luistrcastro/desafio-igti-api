@@ -1,9 +1,18 @@
 import { db } from '../models/index.js';
 import { logger } from '../config/logger.js';
 
+const Grade = db.grade;
+
 const create = async (req, res) => {
+  const grade = new Grade({
+    name: req.body.name,
+    subject: req.body.subject,
+    type: req.body.type,
+    value: req.body.value,
+  });
   try {
-    res.send();
+    const data = await grade.save(grade);
+    res.send(data);
     logger.info(`POST /grade - ${JSON.stringify()}`);
   } catch (error) {
     res
@@ -22,7 +31,8 @@ const findAll = async (req, res) => {
     : {};
 
   try {
-    res.send();
+    const data = await Grade.find({});
+    res.send(data);
     logger.info(`GET /grade`);
   } catch (error) {
     res
@@ -36,7 +46,8 @@ const findOne = async (req, res) => {
   const id = req.params.id;
 
   try {
-    res.send();
+    const data = await Grade.findById(id);
+    res.send(data);
 
     logger.info(`GET /grade - ${id}`);
   } catch (error) {
@@ -55,6 +66,8 @@ const update = async (req, res) => {
   const id = req.params.id;
 
   try {
+    const data = await Grade.findByIdAndUpdate(id, req.body);
+
     res.send({ message: 'Grade atualizado com sucesso' });
 
     logger.info(`PUT /grade - ${id} - ${JSON.stringify(req.body)}`);
@@ -68,6 +81,8 @@ const remove = async (req, res) => {
   const id = req.params.id;
 
   try {
+    await Grade.findByIdAndRemove(id);
+
     res.send({ message: 'Grade excluido com sucesso' });
 
     logger.info(`DELETE /grade - ${id}`);
@@ -83,6 +98,7 @@ const removeAll = async (req, res) => {
   const id = req.params.id;
 
   try {
+    await Grade.remove({});
     res.send({
       message: `Grades excluidos`,
     });
